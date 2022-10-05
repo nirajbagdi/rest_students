@@ -11,6 +11,7 @@ import java.util.List;
 @Configuration
 public class StudentConfig {
 
+    // Automatically puts the initial users in the DB using Command-Line
     @Bean
     CommandLineRunner commandLineRunner(StudentRepository studentRepository) {
         return args -> {

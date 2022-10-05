@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+// Contains The Actual Business Logic related to Students
 @Service
 public class StudentService {
 
@@ -22,11 +23,14 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public void addNewStudent(Student student) {
-        Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
+    private boolean checkEmailExists(String email) {
+        Optional<Student> studentOptional = studentRepository.findStudentByEmail(email);
+        return studentOptional.isPresent();
+    }
 
-        if (studentOptional.isPresent()) {
-            throw new IllegalStateException("Email Taken");
+    public void addNewStudent(Student student) {
+        if (checkEmailExists(student.getEmail())) {
+            throw new IllegalStateException("Email already exists");
         }
 
         studentRepository.save(student);
@@ -54,10 +58,8 @@ public class StudentService {
         }
 
         if (email != null && email.length() > 0 && !Objects.equals(student.getEmail(), email)) {
-            Optional<Student> studentOptional = studentRepository.findStudentByEmail(email);
-
-            if (studentOptional.isPresent()) {
-                throw new IllegalStateException("Email Taken");
+            if (checkEmailExists(email)) {
+                throw new IllegalStateException("Email already exists");
             }
 
             student.setEmail(email);
